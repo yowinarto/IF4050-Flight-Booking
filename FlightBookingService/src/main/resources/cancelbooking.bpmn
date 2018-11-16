@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="SimpleDemo" name="SimpleDemo" isExecutable="true">
+    <bpmn:startEvent id="StartEventProcessStarted" name="Booking Information Received">
+      <bpmn:outgoing>SequenceFlow1</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:sequenceFlow id="SequenceFlow1" sourceRef="StartEventProcessStarted" targetRef="Task_0npbrag" />
+    <bpmn:exclusiveGateway id="ExclusiveGateway_1ls9ofg">
+      <bpmn:incoming>SequenceFlow_0rkzjb7</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0v3mx6x</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="SequenceFlow_0rkzjb7" sourceRef="Task_0npbrag" targetRef="ExclusiveGateway_1ls9ofg" />
+    <bpmn:task id="Task_03atu89" name="Return Auth Fail">
+      <bpmn:incoming>SequenceFlow_0v3mx6x</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jsnurm</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_0v3mx6x" sourceRef="ExclusiveGateway_1ls9ofg" targetRef="Task_03atu89" />
+    <bpmn:endEvent id="EndEvent_1j8tl9d">
+      <bpmn:incoming>SequenceFlow_1jsnurm</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1jsnurm" sourceRef="Task_03atu89" targetRef="EndEvent_1j8tl9d" />
+    <bpmn:task id="Task_0npbrag" name="Authenticate">
+      <bpmn:incoming>SequenceFlow1</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0rkzjb7</bpmn:outgoing>
+    </bpmn:task>
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SimpleDemo">
+      <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEventProcessStarted">
+        <dc:Bounds x="173" y="102" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="163" y="138" width="56" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_08va5r8_di" bpmnElement="SequenceFlow1">
+        <di:waypoint x="209" y="120" />
+        <di:waypoint x="260" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="337.5" y="110" width="90" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ExclusiveGateway_1ls9ofg_di" bpmnElement="ExclusiveGateway_1ls9ofg" isMarkerVisible="true">
+        <dc:Bounds x="408" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0rkzjb7_di" bpmnElement="SequenceFlow_0rkzjb7">
+        <di:waypoint x="360" y="120" />
+        <di:waypoint x="408" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_03atu89_di" bpmnElement="Task_03atu89">
+        <dc:Bounds x="506" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0v3mx6x_di" bpmnElement="SequenceFlow_0v3mx6x">
+        <di:waypoint x="458" y="120" />
+        <di:waypoint x="506" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_1j8tl9d_di" bpmnElement="EndEvent_1j8tl9d">
+        <dc:Bounds x="654" y="102" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1jsnurm_di" bpmnElement="SequenceFlow_1jsnurm">
+        <di:waypoint x="606" y="120" />
+        <di:waypoint x="654" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Task_1ijcqmt_di" bpmnElement="Task_0npbrag">
+        <dc:Bounds x="260" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
