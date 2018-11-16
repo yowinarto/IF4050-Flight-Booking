@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
-  <bpmn:process id="SimpleDemo" name="SimpleDemo" isExecutable="true">
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:camunda="http://camunda.org/schema/1.0/bpmn" id="Definitions_1" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="2.0.3">
+  <bpmn:process id="CancelBooking" name="CancelBooking" isExecutable="true">
     <bpmn:startEvent id="StartEventProcessStarted" name="Booking Information Received">
       <bpmn:outgoing>SequenceFlow1</bpmn:outgoing>
     </bpmn:startEvent>
@@ -8,24 +8,66 @@
     <bpmn:exclusiveGateway id="ExclusiveGateway_1ls9ofg">
       <bpmn:incoming>SequenceFlow_0rkzjb7</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0v3mx6x</bpmn:outgoing>
+      <bpmn:outgoing>SequenceFlow_0886hjk</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="SequenceFlow_0rkzjb7" sourceRef="Task_0npbrag" targetRef="ExclusiveGateway_1ls9ofg" />
-    <bpmn:task id="Task_03atu89" name="Return Auth Fail">
-      <bpmn:incoming>SequenceFlow_0v3mx6x</bpmn:incoming>
-      <bpmn:outgoing>SequenceFlow_1jsnurm</bpmn:outgoing>
-    </bpmn:task>
-    <bpmn:sequenceFlow id="SequenceFlow_0v3mx6x" sourceRef="ExclusiveGateway_1ls9ofg" targetRef="Task_03atu89" />
+    <bpmn:sequenceFlow id="SequenceFlow_0v3mx6x" name="Invalid" sourceRef="ExclusiveGateway_1ls9ofg" targetRef="Task_03atu89">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{not valid}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:endEvent id="EndEvent_1j8tl9d">
       <bpmn:incoming>SequenceFlow_1jsnurm</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_1jsnurm" sourceRef="Task_03atu89" targetRef="EndEvent_1j8tl9d" />
-    <bpmn:task id="Task_0npbrag" name="Authenticate">
+    <bpmn:task id="Task_139nq1k" name="Get Booking Detail">
+      <bpmn:incoming>SequenceFlow_0886hjk</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1kodnr2</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="SequenceFlow_0886hjk" name="Valid" sourceRef="ExclusiveGateway_1ls9ofg" targetRef="Task_139nq1k">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">#{valid}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="SequenceFlow_1kodnr2" sourceRef="Task_139nq1k" targetRef="Task_0wb4qby" />
+    <bpmn:sequenceFlow id="SequenceFlow_0tibftm" sourceRef="Task_0wb4qby" targetRef="Task_1496e2l" />
+    <bpmn:sequenceFlow id="SequenceFlow_0eoaw83" sourceRef="Task_1496e2l" targetRef="IntermediateThrowEvent_1pwt7ck" />
+    <bpmn:intermediateCatchEvent id="IntermediateThrowEvent_1pwt7ck" name="Payment Confirmed">
+      <bpmn:incoming>SequenceFlow_0eoaw83</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1d86v0v</bpmn:outgoing>
+      <bpmn:conditionalEventDefinition>
+        <bpmn:condition xsi:type="bpmn:tFormalExpression">#{payment}</bpmn:condition>
+      </bpmn:conditionalEventDefinition>
+    </bpmn:intermediateCatchEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_1d86v0v" sourceRef="IntermediateThrowEvent_1pwt7ck" targetRef="Task_1q66j94" />
+    <bpmn:sequenceFlow id="SequenceFlow_1nodwfo" sourceRef="Task_1q66j94" targetRef="Task_02n882f" />
+    <bpmn:endEvent id="EndEvent_0kzd44b">
+      <bpmn:incoming>SequenceFlow_18c5nfj</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="SequenceFlow_18c5nfj" sourceRef="Task_02n882f" targetRef="EndEvent_0kzd44b" />
+    <bpmn:serviceTask id="Task_0npbrag" name="Authenticate" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.AuthenticateDelegate">
       <bpmn:incoming>SequenceFlow1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0rkzjb7</bpmn:outgoing>
-    </bpmn:task>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_0wb4qby" name="Calculate Refund" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.CalculateRefundDelegate">
+      <bpmn:incoming>SequenceFlow_1kodnr2</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0tibftm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_03atu89" name="Return Auth Fail" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.AuthFailDelegate">
+      <bpmn:incoming>SequenceFlow_0v3mx6x</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1jsnurm</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_1496e2l" name="Send Payment" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.SendPaymentDelegate">
+      <bpmn:incoming>SequenceFlow_0tibftm</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_0eoaw83</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_1q66j94" name="Update Flight Data" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.UpdateFlightDataDelegate">
+      <bpmn:incoming>SequenceFlow_1d86v0v</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_1nodwfo</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:serviceTask id="Task_02n882f" name="Send Message Success" camunda:class="com.flightbooking.ws.FlightBookingService.CancelBooking.SendMessageSuccessDelegate">
+      <bpmn:incoming>SequenceFlow_1nodwfo</bpmn:incoming>
+      <bpmn:outgoing>SequenceFlow_18c5nfj</bpmn:outgoing>
+    </bpmn:serviceTask>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
-    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SimpleDemo">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="CancelBooking">
       <bpmndi:BPMNShape id="_BPMNShape_StartEvent_2" bpmnElement="StartEventProcessStarted">
         <dc:Bounds x="173" y="102" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -46,12 +88,12 @@
         <di:waypoint x="360" y="120" />
         <di:waypoint x="408" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_03atu89_di" bpmnElement="Task_03atu89">
-        <dc:Bounds x="506" y="80" width="100" height="80" />
-      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="SequenceFlow_0v3mx6x_di" bpmnElement="SequenceFlow_0v3mx6x">
         <di:waypoint x="458" y="120" />
         <di:waypoint x="506" y="120" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="466" y="102" width="33" height="14" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="EndEvent_1j8tl9d_di" bpmnElement="EndEvent_1j8tl9d">
         <dc:Bounds x="654" y="102" width="36" height="36" />
@@ -60,8 +102,66 @@
         <di:waypoint x="606" y="120" />
         <di:waypoint x="654" y="120" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Task_1ijcqmt_di" bpmnElement="Task_0npbrag">
+      <bpmndi:BPMNShape id="Task_139nq1k_di" bpmnElement="Task_139nq1k">
+        <dc:Bounds x="383" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_0886hjk_di" bpmnElement="SequenceFlow_0886hjk">
+        <di:waypoint x="433" y="145" />
+        <di:waypoint x="433" y="207" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="436" y="173" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1kodnr2_di" bpmnElement="SequenceFlow_1kodnr2">
+        <di:waypoint x="483" y="247" />
+        <di:waypoint x="533" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0tibftm_di" bpmnElement="SequenceFlow_0tibftm">
+        <di:waypoint x="633" y="247" />
+        <di:waypoint x="683" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_0eoaw83_di" bpmnElement="SequenceFlow_0eoaw83">
+        <di:waypoint x="783" y="247" />
+        <di:waypoint x="833" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="IntermediateCatchEvent_0w9mtt4_di" bpmnElement="IntermediateThrowEvent_1pwt7ck">
+        <dc:Bounds x="833" y="229" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="825" y="272" width="52" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_1d86v0v_di" bpmnElement="SequenceFlow_1d86v0v">
+        <di:waypoint x="869" y="247" />
+        <di:waypoint x="919" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="SequenceFlow_1nodwfo_di" bpmnElement="SequenceFlow_1nodwfo">
+        <di:waypoint x="1019" y="247" />
+        <di:waypoint x="1069" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="EndEvent_0kzd44b_di" bpmnElement="EndEvent_0kzd44b">
+        <dc:Bounds x="1219" y="229" width="36" height="36" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="SequenceFlow_18c5nfj_di" bpmnElement="SequenceFlow_18c5nfj">
+        <di:waypoint x="1169" y="247" />
+        <di:waypoint x="1219" y="247" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="ServiceTask_1vpj60a_di" bpmnElement="Task_0npbrag">
         <dc:Bounds x="260" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1t8bg78_di" bpmnElement="Task_0wb4qby">
+        <dc:Bounds x="533" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_15jai2x_di" bpmnElement="Task_03atu89">
+        <dc:Bounds x="506" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0yar21g_di" bpmnElement="Task_1496e2l">
+        <dc:Bounds x="683" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_1wu2s77_di" bpmnElement="Task_1q66j94">
+        <dc:Bounds x="919" y="207" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="ServiceTask_0fs9vac_di" bpmnElement="Task_02n882f">
+        <dc:Bounds x="1069" y="207" width="100" height="80" />
       </bpmndi:BPMNShape>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
