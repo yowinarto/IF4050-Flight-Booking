@@ -35,7 +35,7 @@
       <bpmn:incoming>SequenceFlow_16zz0lk</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="SequenceFlow_16zz0lk" sourceRef="Task_0a4j6mj" targetRef="EndEvent_18r7bgl" />
-    <bpmn:serviceTask id="Task_0pkkgaf" name="Check Remaining Flight Capacity" camunda:class="com.flightbooking.ws.FlightBookingService.LoggerDelegate">
+    <bpmn:serviceTask id="Task_0pkkgaf" name="Check Remaining Flight Capacity" camunda:class="com.flightbooking.ws.FlightBookingService.BookingTicket.CheckCapacityDelegate">
       <bpmn:incoming>SequenceFlow1</bpmn:incoming>
       <bpmn:outgoing>SequenceFlow_0me8mtr</bpmn:outgoing>
       <bpmn:property id="Property_0x5ewz4" name="__targetRef_placeholder" />
