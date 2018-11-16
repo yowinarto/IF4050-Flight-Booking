@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.flightbooking.beans.*;
+import com.mysql.jdbc.Statement;
 
 public class DBUtils {
 	public static Promotion findPromo(Connection conn, String promoCode) throws SQLException {
@@ -74,7 +75,7 @@ public class DBUtils {
 	public static Booking insertBooking(Connection conn, Booking booking) throws SQLException {
         String sql = "Insert into booking(passenger_id, num_of_passenger, total_price, flight_id) values (?,?,?,?)";
  
-        PreparedStatement pstm = conn.prepareStatement(sql);
+        PreparedStatement pstm = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
  
         pstm.setInt(1, booking.getPassengerID());
         pstm.setInt(2, booking.getNumOfPassenger());
