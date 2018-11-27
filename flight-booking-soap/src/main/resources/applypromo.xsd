@@ -1,0 +1,28 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           xmlns:tns="http://flightbooking.com/flight-booking-soap"
+           targetNamespace="http://flightbooking.com/flight-booking-soap"
+           elementFormDefault="qualified">
+
+    <xs:element name="postPromoRequest">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="promoData" type="tns:promoData" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:element name="postPromoResponse">
+        <xs:complexType>
+            <xs:sequence>
+                <xs:element name="message" type="xs:string" />
+            </xs:sequence>
+        </xs:complexType>
+    </xs:element>
+
+    <xs:complexType name="promoData">
+        <xs:sequence>
+            <xs:element name="promoCode" type="xs:string" />
+            <xs:element name="bookingId" type="xs:int" />
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>

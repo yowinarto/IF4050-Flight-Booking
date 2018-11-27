@@ -1,0 +1,9 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:bs="http://flightbooking.com/flight-booking-soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <bs:postCancelBookingRequest>
+            <bs:bookingId>5</bs:bookingId>
+        </bs:postCancelBookingRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
