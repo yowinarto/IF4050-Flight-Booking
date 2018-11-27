@@ -5,7 +5,7 @@
 ### Source
 ```./entity_service```
 
-## Task Centric Service 
+## Task Centric Services
 
 ### Source
 ```./FlightBookingService```
