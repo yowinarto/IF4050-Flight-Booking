@@ -1,0 +1,12 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:bs="http://flightbooking.com/flight-booking-soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <bs:postPromoRequest>
+            <bs:promoData>
+                <bs:promoCode>bakuljkt</bs:promoCode>
+                <bs:bookingId>3</bs:bookingId>
+            </bs:promoData>
+        </bs:postPromoRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
