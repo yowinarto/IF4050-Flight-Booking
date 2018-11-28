@@ -16,6 +16,7 @@ public class Flight implements Serializable {
 	private String destination;
 	private Time timeFlight;
 	private float price;
+	private int capacity;
 	public Date getDateFlight() {
 		return dateFlight;
 	}
@@ -62,5 +63,11 @@ public class Flight implements Serializable {
 	}
 	public void setFlightId(int flightId) {
 		this.flightId = flightId;
+	}
+	public int getCapacity() {
+		return capacity;
+	}
+	public void setCapacity(int capacity) {
+		this.capacity = capacity;
 	}
 }

@@ -18,7 +18,7 @@ public class CalculatePriceAfterPromoDelegate implements JavaDelegate {
 		// TODO Auto-generated method stub
 		Booking booking = (Booking) execution.getVariable("BookingDetail");
 		Promotion promo = (Promotion) execution.getVariable("Promo");
-		booking.setTotalPrice(booking.getTotalPrice()/promo.getDiscount());
+		booking.setTotalPrice(booking.getTotalPrice()*(1-(0.01f*promo.getDiscount())));
 		execution.setVariable("UpdatedBookingDetail", booking);
 	}
 

@@ -17,7 +17,7 @@ public class UpdateFlightDataDelegate implements JavaDelegate {
 		Booking booking = (Booking) execution.getVariable("BookingDetail");
         try {
             conn = ConnectionUtils.getConnection();
-            booking = DBUtils.findBooking(conn, booking.getID());
+            DBUtils.deleteBooking(conn, booking.getID());
         } catch (Exception e) {
             e.printStackTrace();
             ConnectionUtils.rollbackQuietly(conn);

@@ -5,6 +5,7 @@ import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -12,6 +13,38 @@ import com.flightbooking.beans.*;
 import com.mysql.jdbc.Statement;
 
 public class DBUtils {
+	public static Flight findFlight(Connection conn, int flightId) throws SQLException {
+		 
+        String sql = "Select * from flight a "//
+                + " where a.id = ? ";
+ 
+        PreparedStatement pstm = conn.prepareStatement(sql);
+        pstm.setInt(1, flightId);
+ 
+        ResultSet rs = pstm.executeQuery();
+ 
+        if (rs.next()) {
+        	Date dateFlight = rs.getDate("date_flight");
+        	String flightClass = rs.getString("class");
+        	String origin = rs.getString("origin");
+        	String dest = rs.getString("destination");
+        	Time timeFlight = rs.getTime("time_flight");
+        	float price = rs.getFloat("price");
+        	int capacity = rs.getInt("capacity");
+        	Flight flight = new Flight();
+        	flight.setFlightId(flightId);
+        	flight.setDateFlight(dateFlight);
+        	flight.setFlightClass(flightClass);
+        	flight.setOrigin(origin);
+        	flight.setDestination(dest);
+        	flight.setTimeFlight(timeFlight);
+        	flight.setPrice(price);
+        	flight.setCapacity(capacity);
+            return flight;
+        }
+        return null;
+    }
+	
 	public static Promotion findPromo(Connection conn, String promoCode) throws SQLException {
 		 
         String sql = "Select a.promo_code, a.available_from, a.available_until, a.discount from promotion a "//
@@ -67,7 +100,18 @@ public class DBUtils {
         PreparedStatement pstm = conn.prepareStatement(sql);
  
         pstm.setFloat(1, booking.getTotalPrice());
-        pstm.setInt(3, booking.getID());
+        pstm.setInt(2, booking.getID());
+        int result = pstm.executeUpdate();
+        return result;
+    }
+	
+	public static int updateFlight(Connection conn, Flight flight) throws SQLException {
+        String sql = "Update flight set capacity = ? where id=? ";
+ 
+        PreparedStatement pstm = conn.prepareStatement(sql);
+ 
+        pstm.setFloat(1, flight.getCapacity());
+        pstm.setInt(2, flight.getFlightId());
         int result = pstm.executeUpdate();
         return result;
     }
