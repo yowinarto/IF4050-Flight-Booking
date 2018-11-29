@@ -1,5 +1,12 @@
 # PPLS Flight Booking Service
 
+## Anggota Kelompok
+Afif Bambang P.       - 13515058
+
+Winarto               - 13515061
+
+Gianfranco Fertino H. - 13515118
+
 ## Entity Centric Service
 
 ### Source
@@ -9,6 +16,12 @@
 
 ### Source
 ```./FlightBookingService```
+
+### SOAP Wrapper
+```./flight-booking-soap```
+
+### Payment Gateway Middleware
+```./payment-gateway-integration```
 
 ## Camunda BPM Process Application
 A Process Application for [Camunda BPM](http://docs.camunda.org).
@@ -94,21 +107,10 @@ and inspect it using
 [Camunda Cockpit](http://docs.camunda.org/latest/guides/user-guide/#cockpit).
 
 ### Send Request
+#### Manually start process in camunda
 1. POST request to
-
-**Apply Promo**
 ```
-http://localhost:8080/engine-rest/process-definition/key/ApplyPromo/start
-``` 
-
-**Booking Ticket**
-```
-http://localhost:8080/engine-rest/process-definition/key/BookingTicket/start
-``` 
-
-**Cancel Booking**
-```
-http://localhost:8080/engine-rest/process-definition/key/CancelBooking/start
+http://178.128.80.25:8080/engine-rest/message
 ``` 
 
 2. Set Content-Type to application/json with body
@@ -116,24 +118,28 @@ http://localhost:8080/engine-rest/process-definition/key/CancelBooking/start
 **Apply Promo**
 ```
 {
-  "variables": {
+  "messageName" : "Apply Promo",
+  "businessKey" : "12345",
+  "processVariables" : {
     "promoCode" : {
         "value" : "BAKULBDG",
         "type": "String"
     },
     "bookingId" : {
-      "value" : 1,
+      "value" : 2,
       "type": "Integer"
     }
   },
- "businessKey" : "12345"
+  "resultEnabled" : true 
 }
 ```
 
 **Booking Ticket**
 ```
 {
-  "variables": {
+  "messageName" : "Booking Ticket",
+  "businessKey" : "12345",
+  "processVariables" : {
     "numOfPassenger" : {
         "value" : 1,
         "type": "Integer"
@@ -143,26 +149,94 @@ http://localhost:8080/engine-rest/process-definition/key/CancelBooking/start
       "type": "Integer"
     },
     "flightId" : {
-      "value" : 1,
+      "value" : 2,
       "type": "Integer"
     }
   },
- "businessKey" : "12345"
+  "resultEnabled" : true 
 }
 ```
 
 **Cancel Booking**
 ```
 {
-  "variables": {
+  "messageName" : "Cancel Booking",
+  "businessKey" : "12345",
+  "processVariables" : {
     "bookingId" : {
-        "value" : 1,
-        "type": "Integer"
+      "value" : 2,
+      "type": "Integer"
     }
   },
- "businessKey" : "12345"
+  "resultEnabled" : true 
 }
 ```
+#### Start process from SOAP Wrapper
+1. POST request to
+
+**Apply Promo**
+```
+http://174.138.18.246:8080/flight-booking-soap-wrapper/flight/apply-promo
+``` 
+
+**Booking Ticket**
+```
+http://174.138.18.246:8080/flight-booking-soap-wrapper/flight/booking
+``` 
+
+**Cancel Booking**
+```
+http://174.138.18.246:8080/flight-booking-soap-wrapper/flight/cancel-booking
+``` 
+
+2. Set Content-Type to text/xml with body
+
+**Apply Promo**
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:bs="http://flightbooking.com/flight-booking-soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <bs:postPromoRequest>
+            <bs:promoData>
+                <bs:promoCode>BAKULBDG</bs:promoCode>
+                <bs:bookingId>2</bs:bookingId>
+            </bs:promoData>
+        </bs:postPromoRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
+```
+
+**Booking Ticket**
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:bs="http://flightbooking.com/flight-booking-soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <bs:postBookingRequest>
+            <bs:bookingData>
+                <bs:numOfPassenger>2</bs:numOfPassenger>
+                <bs:passengerId>1</bs:passengerId>
+                <bs:flightId>1</bs:flightId>
+            </bs:bookingData>
+        </bs:postBookingRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
+```
+
+**Cancel Booking**
+```
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/"
+                  xmlns:bs="http://flightbooking.com/flight-booking-soap">
+    <soapenv:Header/>
+    <soapenv:Body>
+        <bs:postCancelBookingRequest>
+            <bs:bookingId>5</bs:bookingId>
+        </bs:postCancelBookingRequest>
+    </soapenv:Body>
+</soapenv:Envelope>
+```
+
 
 ## License
 [Apache License, Version 2.0](http://www.apache.org/licenses/LICENSE-2.0).

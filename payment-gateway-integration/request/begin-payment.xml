@@ -1,0 +1,11 @@
+<soapenv:Envelope xmlns:soapenv="http://schemas.xmlsoap.org/soap/envelope/" xmlns:ws="http://ws.core.easypay.payphone/">
+   <soapenv:Header/>
+   <soapenv:Body>
+      <ws:beginPayment>
+         <!--Optional:-->
+         <paymentMethodId>bank</paymentMethodId>
+         <!--Optional:-->
+         <amount>10134</amount>
+      </ws:beginPayment>
+   </soapenv:Body>
+</soapenv:Envelope>
